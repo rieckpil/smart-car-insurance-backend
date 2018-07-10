@@ -1,12 +1,12 @@
 package de.sci.backend.smartcarinsurancebackend;
 
-import de.sci.backend.smartcarinsurancebackend.hukapi.HukApiCarInsuranceResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/insurance")
+@CrossOrigin(origins = "*")
 public class InsuranceBoundary {
 
     @Autowired
