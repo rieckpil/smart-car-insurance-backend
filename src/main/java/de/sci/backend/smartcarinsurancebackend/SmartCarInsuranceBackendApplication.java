@@ -7,13 +7,17 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Collections;
+
 @SpringBootApplication
 @EnableScheduling
 public class SmartCarInsuranceBackendApplication {
 
     @Bean
     public RestTemplate restTemplate() {
-        return new RestTemplateBuilder().build();
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.setInterceptors(Collections.singletonList(new UserAgentInterceptor()));
+        return restTemplate;
     }
 
     public static void main(String[] args) {
