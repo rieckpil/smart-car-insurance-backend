@@ -27,6 +27,24 @@ public class InsuranceBoundary {
 
     }
 
+    @PostMapping("/dummy")
+    public CarInsuranceResult getDummyCarInsuranceResult() {
+
+        CarInsuranceResult result = new CarInsuranceResult();
+        result.setHaftpflicht(45.55);
+        result.setTeilkasko(650.40);
+        result.setVollkasko(993.60);
+        result.setHersteller("VW");
+        result.setTyp("Golf");
+        result.setLeistung(140);
+        result.setName("Max Mustermann");
+        result.setPlz("96450");
+        result.setStadt("Coburg");
+        result.setStrasse("Hauptstraße 10");
+
+        return result;
+    }
+
     @GetMapping
     public HukApiResult getHukApiResult(@RequestParam("hsn") String hsn, @RequestParam("tsn") String tsn) throws Exception {
 
