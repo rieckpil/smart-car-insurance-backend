@@ -4,12 +4,18 @@ import com.google.cloud.vision.v1.*;
 import com.google.protobuf.ByteString;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 @Service
 public class VehicleDocumentImageProcessor {
+
+    @PostConstruct
+    public void init() {
+
+    }
 
     public String[] processImage(byte[] imageAsByteArray) throws Exception {
 
