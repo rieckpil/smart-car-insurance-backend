@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Base64;
+
 @RestController
 @RequestMapping("/api/insurance")
 @CrossOrigin(origins = "*")
@@ -18,7 +20,41 @@ public class InsuranceBoundary {
     private VehicleDocumentImageProcessor vehicleDocumentImageProcessor;
 
     @PostMapping
-    public CarInsuranceResult calculateInsuranceCosts(@RequestParam("file") MultipartFile file) throws Exception {
+    public CarInsuranceResult calculateInsuranceCostsWithFormInBody(@RequestBody VehicleDocumentImage vehicleDocumentImage) throws
+            Exception {
+
+        byte[] decodedImage = Base64.getDecoder().decode(vehicleDocumentImage.getPicture());
+
+        System.out.println("decoded images has " + decodedImage.length + " bytes");
+
+        String[] hsnAndTsn = this.vehicleDocumentImageProcessor.processImage(decodedImage);
+
+        String hsn = hsnAndTsn[0];
+
+        if (hsn.length() != 4) {
+            int diff = 4 - hsn.length();
+            for (int i = 0; i < diff; i++) {
+                hsn = "0" + hsn;
+            }
+        }
+
+        String tsn = hsnAndTsn[1].substring(0, 3);
+
+        System.out.println("HSN: " + hsn);
+        System.out.println("TSN: " + tsn);
+
+        HukApiCarInsuranceResult hukCarInsuranceResult = this.hukInsuranceCalculator.getApiResultFromHuk(hsn, tsn);
+
+        CarType carTypeResult = this.hukInsuranceCalculator.getCarType(hsn, tsn);
+
+        CarInsuranceResult result = createCarInsuranceResult(hukCarInsuranceResult, carTypeResult);
+
+        return result;
+    }
+
+    @PostMapping("/file")
+    public CarInsuranceResult calculateInsuranceCostsWithFormFile(@RequestParam("file") MultipartFile file) throws
+            Exception {
 
         System.out.println(file.getName());
         System.out.println(file.getOriginalFilename());
@@ -32,9 +68,19 @@ public class InsuranceBoundary {
         String[] hsnAndTsn = this.vehicleDocumentImageProcessor.processImage(imageBytes);
 
         String hsn = hsnAndTsn[0];
+
+        if (hsn.length() != 4) {
+            int diff = 4 - hsn.length();
+            for (int i = 0; i < diff; i++) {
+                hsn = "0" + hsn;
+            }
+        }
+
+
         String tsn = hsnAndTsn[1].substring(0, 3);
 
-        System.out.println(tsn);
+        System.out.println("HSN: " + hsn);
+        System.out.println("TSN: " + tsn);
 
         HukApiCarInsuranceResult hukCarInsuranceResult = this.hukInsuranceCalculator.getApiResultFromHuk(hsn, tsn);
 

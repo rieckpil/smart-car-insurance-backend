@@ -39,12 +39,8 @@ public class VehicleDocumentImageProcessor {
             String[] result = responses.get(0).getTextAnnotationsList().get(0).getDescription().split
                     ("\n")[2].split(" ");
 
-            System.out.println("HSN: " + result[0]);
-            System.out.println("TSN: " + result[1]);
-
             data[0] = result[0];
             data[1] = result[1];
-
 
         }
 
