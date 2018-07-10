@@ -1,5 +1,6 @@
 package de.sci.backend.smartcarinsurancebackend;
 
+import de.sci.backend.smartcarinsurancebackend.hukapi.HukApiCarInsuranceResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,13 +31,15 @@ public class InsuranceBoundary {
     @PostMapping("/dummy")
     public CarInsuranceResult getDummyCarInsuranceResult() {
 
+        CarType defaultCarType = this.hukInsuranceCalculator.defaultCarType();
+
         CarInsuranceResult result = new CarInsuranceResult();
         result.setHaftpflicht(45.55);
         result.setTeilkasko(650.40);
         result.setVollkasko(993.60);
-        result.setHersteller("VW");
-        result.setTyp("Golf");
-        result.setLeistung(140);
+        result.setHersteller(defaultCarType.getHersteller());
+        result.setTyp(defaultCarType.getTyp());
+        result.setLeistung(defaultCarType.getLeistung());
         result.setName("Max Mustermann");
         result.setPlz("96450");
         result.setStadt("Coburg");
@@ -45,10 +48,10 @@ public class InsuranceBoundary {
         return result;
     }
 
-    @GetMapping
-    public HukApiResult getHukApiResult(@RequestParam("hsn") String hsn, @RequestParam("tsn") String tsn) throws Exception {
+    @GetMapping("/cartype")
+    public CarType getHukApiResult(@RequestParam("hsn") String hsn, @RequestParam("tsn") String tsn) throws Exception {
 
-        return this.hukInsuranceCalculator.getApiResultFromHuk(hsn, tsn);
+        return this.hukInsuranceCalculator.getCarType(hsn, tsn);
 
     }
 

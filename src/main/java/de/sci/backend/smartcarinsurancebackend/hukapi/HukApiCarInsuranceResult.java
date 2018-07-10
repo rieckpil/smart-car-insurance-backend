@@ -1,4 +1,4 @@
-package de.sci.backend.smartcarinsurancebackend;
+package de.sci.backend.smartcarinsurancebackend.hukapi;
 
 import com.fasterxml.jackson.annotation.*;
 
@@ -21,7 +21,7 @@ import java.util.Map;
         "sfHaftpflicht",
         "sfKasko"
 })
-public class HukApiResult {
+public class HukApiCarInsuranceResult {
 
     @JsonProperty("beitragGesamt")
     private Double beitragGesamt;
@@ -194,7 +194,7 @@ public class HukApiResult {
 
     @Override
     public String toString() {
-        return "HukApiResult{" +
+        return "HukApiCarInsuranceResult{" +
                 "beitragGesamt=" + beitragGesamt +
                 ", beitragGesamtHkb=" + beitragGesamtHkb +
                 ", beitragHaftpflichtMitSchutzbrief=" + beitragHaftpflichtMitSchutzbrief +
