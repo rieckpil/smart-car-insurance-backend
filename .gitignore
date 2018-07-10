@@ -1,6 +1,7 @@
 /target/
 !.mvn/wrapper/maven-wrapper.jar
 Dockerfile
+key.json
 
 ### STS ###
 .apt_generated
