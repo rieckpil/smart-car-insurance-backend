@@ -9,4 +9,5 @@ public class HukApiCarTypeResult {
     private String typeNumber;
     private String label;
     private String brand;
+
 }

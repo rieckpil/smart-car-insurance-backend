@@ -125,8 +125,8 @@ public class HukInsuranceCalculator {
         result.set("kasko", kasko);
 
         ObjectNode sfKlasse = objectMapper.createObjectNode();
-        sfKlasse.put("klasseHaftpflicht", "35");
-        sfKlasse.put("klasseKasko", "35");
+        sfKlasse.put("klasseHaftpflicht", "20");
+        sfKlasse.put("klasseKasko", "20");
         sfKlasse.put("vorversichert", false);
         result.set("sfKlasse", sfKlasse);
 
