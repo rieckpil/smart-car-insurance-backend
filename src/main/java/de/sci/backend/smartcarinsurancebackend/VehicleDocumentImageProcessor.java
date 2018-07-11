@@ -4,22 +4,16 @@ import com.google.cloud.vision.v1.*;
 import com.google.protobuf.ByteString;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Service
 public class VehicleDocumentImageProcessor {
 
-    @PostConstruct
-    public void init() {
 
-    }
+    public RegexParser.CarData processImage(byte[] imageAsByteArray) {
 
-    public String[] processImage(byte[] imageAsByteArray) throws Exception {
-
-        String[] data = new String[2];
+        RegexParser.CarData data = new RegexParser.CarData();
 
         try (ImageAnnotatorClient vision = ImageAnnotatorClient.create()) {
 
@@ -39,17 +33,18 @@ public class VehicleDocumentImageProcessor {
             BatchAnnotateImagesResponse response = vision.batchAnnotateImages(requests);
             List<AnnotateImageResponse> responses = response.getResponsesList();
 
-            Arrays.stream(responses.get(0).getTextAnnotationsList().get(0).getDescription().split
+            /*Arrays.stream(responses.get(0).getTextAnnotationsList().get(0).getDescription().split
                     ("\n")).forEach(e -> System.out.println(e));
 
             String[] result = responses.get(0).getTextAnnotationsList().get(0).getDescription().split
                     ("\n")[2].split(" ");
+            */
 
-            data[0] = result[0];
-            data[1] = result[1];
-
+            data = RegexParser.parse(responses.get(0).getTextAnnotationsList());
+            return data;
+        }catch (Exception e ) {
+            System.out.println(e.getStackTrace());
+            return data;
         }
-
-        return data;
     }
 }

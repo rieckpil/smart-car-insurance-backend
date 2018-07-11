@@ -51,10 +51,24 @@ public class HukInsuranceCalculator {
         headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
         headers.set("Authorization", this.jwtApiKey);
         HttpEntity<ObjectNode> entity = new HttpEntity<ObjectNode>(getApiRequestObject(hsn, tsn), headers);
-        ResponseEntity<HukApiCarInsuranceResult> respEntity = restTemplate.exchange(API_URL, HttpMethod.POST, entity, HukApiCarInsuranceResult
-                .class);
 
-        return respEntity.getBody();
+        try {
+            ResponseEntity<HukApiCarInsuranceResult> respEntity = restTemplate.exchange(API_URL, HttpMethod.POST, entity, HukApiCarInsuranceResult
+                    .class);
+
+            return respEntity.getBody();
+
+        } catch (Exception e) {
+            System.out.println("Returing default values due to server error");
+            HukApiCarInsuranceResult defaultResult = new HukApiCarInsuranceResult();
+            defaultResult.setBeitragHaftpflichtMitSchutzbrief(49.51);
+            defaultResult.setBeitragTeilkasko(79.87);
+            defaultResult.setBeitragVollkasko(112.10);
+            e.printStackTrace();
+
+            return defaultResult;
+        }
+
     }
 
     public CarType getCarType(String hsn, String tsn) {
@@ -86,7 +100,7 @@ public class HukInsuranceCalculator {
 
             return result;
 
-        } catch (Exception e ){
+        } catch (Exception e) {
             System.out.println(e.getMessage());
             return defaultCarType();
         }
@@ -103,6 +117,8 @@ public class HukInsuranceCalculator {
     }
 
     private ObjectNode getApiRequestObject(String hsn, String tsn) throws Exception {
+
+        System.out.println("### hsn: " + hsn + " tsn" + tsn);
 
         ObjectNode result = objectMapper.createObjectNode();
 

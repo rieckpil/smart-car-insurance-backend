@@ -27,9 +27,9 @@ public class InsuranceBoundary {
 
         System.out.println("decoded images has " + decodedImage.length + " bytes");
 
-        String[] hsnAndTsn = this.vehicleDocumentImageProcessor.processImage(decodedImage);
+        RegexParser.CarData data = this.vehicleDocumentImageProcessor.processImage(decodedImage);
 
-        String hsn = hsnAndTsn[0];
+        String hsn = data.getHSN();
 
         if (hsn.length() != 4) {
             int diff = 4 - hsn.length();
@@ -38,7 +38,7 @@ public class InsuranceBoundary {
             }
         }
 
-        String tsn = hsnAndTsn[1].substring(0, 3);
+        String tsn = data.getTSN().replace("O", "Q").replace("0", "Q");
 
         System.out.println("HSN: " + hsn);
         System.out.println("TSN: " + tsn);
@@ -47,7 +47,7 @@ public class InsuranceBoundary {
 
         CarType carTypeResult = this.hukInsuranceCalculator.getCarType(hsn, tsn);
 
-        CarInsuranceResult result = createCarInsuranceResult(hukCarInsuranceResult, carTypeResult);
+        CarInsuranceResult result = createCarInsuranceResult(hukCarInsuranceResult, carTypeResult, data);
 
         return result;
     }
@@ -65,9 +65,9 @@ public class InsuranceBoundary {
 
         System.out.println("image has length of: " + imageBytes.length);
 
-        String[] hsnAndTsn = this.vehicleDocumentImageProcessor.processImage(imageBytes);
+        RegexParser.CarData data = this.vehicleDocumentImageProcessor.processImage(imageBytes);
 
-        String hsn = hsnAndTsn[0];
+        String hsn = data.getHSN();
 
         if (hsn.length() != 4) {
             int diff = 4 - hsn.length();
@@ -76,8 +76,7 @@ public class InsuranceBoundary {
             }
         }
 
-
-        String tsn = hsnAndTsn[1].substring(0, 3);
+        String tsn = data.getTSN().replace("O", "Q");
 
         System.out.println("HSN: " + hsn);
         System.out.println("TSN: " + tsn);
@@ -86,7 +85,7 @@ public class InsuranceBoundary {
 
         CarType carTypeResult = this.hukInsuranceCalculator.getCarType(hsn, tsn);
 
-        CarInsuranceResult result = createCarInsuranceResult(hukCarInsuranceResult, carTypeResult);
+        CarInsuranceResult result = createCarInsuranceResult(hukCarInsuranceResult, carTypeResult, data);
 
         return result;
 
@@ -122,7 +121,8 @@ public class InsuranceBoundary {
     }
 
 
-    private CarInsuranceResult createCarInsuranceResult(HukApiCarInsuranceResult hukCarInsuranceResult, CarType carTypeResult) {
+    private CarInsuranceResult createCarInsuranceResult(HukApiCarInsuranceResult hukCarInsuranceResult, CarType
+            carTypeResult, RegexParser.CarData data) {
 
         CarInsuranceResult result = new CarInsuranceResult();
 
@@ -132,10 +132,10 @@ public class InsuranceBoundary {
         result.setHersteller(carTypeResult.getHersteller());
         result.setTyp(carTypeResult.getTyp());
         result.setLeistung(carTypeResult.getLeistung());
-        result.setName("Max Mustermann");
-        result.setPlz("96450");
-        result.setStadt("Coburg");
-        result.setStrasse("Hauptstraße 10");
+        result.setName(data.getSurname() + " " + data.getName());
+        result.setPlz(data.getAddress().getPlz());
+        result.setStadt(data.getAddress().getLocation());
+        result.setStrasse(data.getAddress().getStreet());
 
         return result;
     }
